@@ -107,47 +107,23 @@ $(function() {
 
         /**
          * This beforeEach ensures the loadFeed completes its work and load allFeeds before the expect tests runs
-         * and add the title of header in the headerContent array, the setTimeout ensures a minimum time
+         * and add the title of header in the headerContent array
          */
         beforeEach(function(done){
-            setTimeout(function(){
-                loadFeed(whoLoad, function(){
+            loadFeed(0, function(){                
+                headerContent.push($('.header-title').text());
+                loadFeed(1, function(){                    
                     headerContent.push($('.header-title').text());
-                    console.log(headerContent);
-                    done();              
-                });
-                whoLoad++;
-            }, 1000);
+                    done();
+                })
+            })
         });
 
         /**
-         * This afterAll call the loadFeed again when all it expect tests have run to set the page at the first item feed load.
+         * This test compare the title of each item in the array and if they are different the test is passed
          */
-        afterAll(function(done){
-            whoLoad = 0;
-            loadFeed(whoLoad, function(){
-                done();            
-            });
-        });
-
-        /**
-         * All these tests compare the title on previous position of array with the title on the current
-         * position and if they are different the test is passed
-         */
-        it('the first feedList item is different of empty', function(){
-            expect(headerContent[0]).not.toBe('');
-        });
-
-        it('the second feedList item is different of first item', function(){
-            expect(headerContent[1]).not.toBe(headerContent[0]);
-        });
-
-        it('the third feedList item is different of second item', function(){
-            expect(headerContent[2]).not.toBe(headerContent[1]);
-        });
-
-        it('the fourth feedList item is different of third item', function(){
-            expect(headerContent[3]).not.toBe(headerContent[2]);
+        it('the content of feed changes when a new feed is called', function(){
+            expect(headerContent[0]).not.toBe(headerContent[1]);
         });
     });
 }());
